@@ -25,3 +25,7 @@ Thumbs.db
 # IDE
 .vscode/
 .idea/
+
+# App source (not owned by this repo)
+frontend/
+backend/
