@@ -3,8 +3,6 @@
 #
 # PURPOSE:
 #   Validates every pull request targeting `main` before it can be merged.
-#   Also callable as a reusable workflow by deploy.yml (workflow_call trigger)
-#   so that the exact same checks run as a mandatory pre-deploy gate.
 #
 # NOTE:
 #   backend/ and frontend/ are not checked into this repo (gitignored).
@@ -25,9 +23,6 @@ on:
 
   # Allow developers to trigger a run manually from the GitHub UI
   workflow_dispatch:
-
-  # Allow deploy.yml to reuse this entire workflow as a pre-deploy gate
-  workflow_call:
 
 # Cancel any in-progress run for the same branch when a new push arrives.
 concurrency:
