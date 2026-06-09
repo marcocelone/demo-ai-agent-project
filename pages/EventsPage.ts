@@ -1,14 +1,19 @@
+import { Page, Locator } from "@playwright/test";
+
 export class EventsPage {
-  constructor(page) {
+  readonly page: Page;
+  readonly eventCards: Locator;
+
+  constructor(page: Page) {
     this.page = page;
     this.eventCards = page.getByTestId("event-card");
   }
 
-  async goto() {
+  async goto(): Promise<void> {
     await this.page.goto("/events");
   }
 
-  firstAvailableCard() {
+  firstAvailableCard(): Locator {
     return this.eventCards
       .filter({
         has: this.page.getByTestId("book-now-btn"),

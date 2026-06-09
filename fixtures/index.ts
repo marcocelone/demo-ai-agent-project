@@ -1,11 +1,28 @@
-import { test as base, expect } from "@playwright/test";
-import { LoginPage } from "../pages/LoginPage.js";
-import { EventsPage } from "../pages/EventsPage.js";
-import { EventDetailPage } from "../pages/EventDetailPage.js";
-import { BookingsPage } from "../pages/BookingsPage.js";
-import { BookingDetailPage } from "../pages/BookingDetailPage.js";
+import { test as base, expect, Page } from "@playwright/test";
+import { LoginPage } from "../pages/LoginPage.ts";
+import { EventsPage } from "../pages/EventsPage.ts";
+import { EventDetailPage } from "../pages/EventDetailPage.ts";
+import { BookingsPage } from "../pages/BookingsPage.ts";
+import { BookingDetailPage } from "../pages/BookingDetailPage.ts";
 
-export const test = base.extend({
+export interface CleanSession {
+  page: Page;
+  eventsPage: EventsPage;
+  eventDetailPage: EventDetailPage;
+  bookingsPage: BookingsPage;
+  bookingDetailPage: BookingDetailPage;
+}
+
+type Fixtures = {
+  loginPage: LoginPage;
+  eventsPage: EventsPage;
+  eventDetailPage: EventDetailPage;
+  bookingsPage: BookingsPage;
+  bookingDetailPage: BookingDetailPage;
+  cleanSession: CleanSession;
+};
+
+export const test = base.extend<Fixtures>({
   loginPage: async ({ page }, use) => {
     await use(new LoginPage(page));
   },

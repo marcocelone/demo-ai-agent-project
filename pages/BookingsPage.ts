@@ -1,5 +1,13 @@
+import { Page, Locator } from "@playwright/test";
+
 export class BookingsPage {
-  constructor(page) {
+  readonly page: Page;
+  readonly emptyStateText: Locator;
+  readonly clearAllBtn: Locator;
+  readonly cards: Locator;
+  readonly browseEventsLink: Locator;
+
+  constructor(page: Page) {
     this.page = page;
     this.emptyStateText = page.getByText("No bookings yet");
     this.clearAllBtn = page.getByRole("button", {
@@ -11,15 +19,15 @@ export class BookingsPage {
       .getByRole("link", { name: "Browse Events" });
   }
 
-  async goto() {
+  async goto(): Promise<void> {
     await this.page.goto("/bookings");
   }
 
-  cardByRef(bookingRef) {
+  cardByRef(bookingRef: string): Locator {
     return this.cards.filter({ hasText: bookingRef });
   }
 
-  async clearAll() {
+  async clearAll(): Promise<void> {
     await this.goto();
     const isEmpty = await this.emptyStateText.isVisible().catch(() => false);
     if (isEmpty) return;

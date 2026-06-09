@@ -1,5 +1,19 @@
+import { Page, Locator } from "@playwright/test";
+
 export class BookingDetailPage {
-  constructor(page) {
+  readonly page: Page;
+  readonly bookingRefEl: Locator;
+  readonly eventDetailsSection: Locator;
+  readonly customerDetailsSection: Locator;
+  readonly paymentSummarySection: Locator;
+  readonly totalPaidText: Locator;
+  readonly checkRefundBtn: Locator;
+  readonly cancelBtn: Locator;
+  readonly cancelDialogTitle: Locator;
+  readonly confirmCancelBtn: Locator;
+  readonly cancelSuccessToast: Locator;
+
+  constructor(page: Page) {
     this.page = page;
     this.bookingRefEl = page.locator("span.font-mono.font-bold").first();
     this.eventDetailsSection = page.getByText("Event Details");
@@ -13,7 +27,7 @@ export class BookingDetailPage {
     this.cancelSuccessToast = page.getByText("Booking cancelled successfully");
   }
 
-  async cancelBooking() {
+  async cancelBooking(): Promise<void> {
     await this.cancelBtn.click();
     await this.cancelDialogTitle.waitFor();
     await this.confirmCancelBtn.click();

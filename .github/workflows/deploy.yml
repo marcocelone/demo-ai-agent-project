@@ -61,9 +61,6 @@ jobs:
     name: Pre-deploy CI Checks
     # Call the reusable CI workflow defined in ci.yml
     uses: ./.github/workflows/ci.yml
-    # `secrets: inherit` passes all secrets from this workflow to ci.yml
-    # so it can perform the SSH-based schema drift check
-    secrets: inherit
 
 
   # ╔═══════════════════════════════════════════════════════════════════════════

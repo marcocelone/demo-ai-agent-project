@@ -1,12 +1,21 @@
-import { test, expect } from "../fixtures/index.js";
+import { test, expect } from "../fixtures/index.ts";
+import { EventsPage } from "../pages/EventsPage.ts";
+import { EventDetailPage } from "../pages/EventDetailPage.ts";
 
 // ── Shared action ───────────────────────────────────────────────────────────────
 
-/**
- * Books the first available event and returns { bookingRef, eventTitle }.
- * Precondition: user is logged in.
- */
-async function bookFirstEvent({ eventsPage, eventDetailPage }) {
+interface BookingResult {
+  bookingRef: string;
+  eventTitle: string;
+}
+
+async function bookFirstEvent({
+  eventsPage,
+  eventDetailPage,
+}: {
+  eventsPage: EventsPage;
+  eventDetailPage: EventDetailPage;
+}): Promise<BookingResult> {
   await eventsPage.goto();
   const card = eventsPage.firstAvailableCard();
   await expect(card).toBeVisible();

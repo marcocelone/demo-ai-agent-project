@@ -1,5 +1,21 @@
+import { Page, Locator } from "@playwright/test";
+
+interface BookingDetails {
+  name?: string;
+  email?: string;
+  phone?: string;
+}
+
 export class EventDetailPage {
-  constructor(page) {
+  readonly page: Page;
+  readonly nameInput: Locator;
+  readonly emailInput: Locator;
+  readonly phoneInput: Locator;
+  readonly confirmBtn: Locator;
+  readonly bookingRefEl: Locator;
+  readonly viewMyBookingsLink: Locator;
+
+  constructor(page: Page) {
     this.page = page;
     this.nameInput = page.getByLabel("Full Name");
     this.emailInput = page.locator("#customer-email");
@@ -15,14 +31,14 @@ export class EventDetailPage {
     name = "Test User",
     email = "testuser@example.com",
     phone = "9876543210",
-  } = {}) {
+  }: BookingDetails = {}): Promise<void> {
     await this.nameInput.fill(name);
     await this.emailInput.fill(email);
     await this.phoneInput.fill(phone);
     await this.confirmBtn.click();
   }
 
-  async getBookingRef() {
+  async getBookingRef(): Promise<string> {
     await this.bookingRefEl.waitFor();
     return (await this.bookingRefEl.textContent())?.trim() ?? "";
   }

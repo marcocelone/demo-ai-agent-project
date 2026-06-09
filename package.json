@@ -11,9 +11,8 @@
     "db:push": "cd backend && npx prisma db push",
     "build": "npm run build --prefix frontend",
     "lint": "npm run lint --prefix frontend",
-    "lint": "npm run lint --prefix frontend",
-    "format": "prettier --check \"pages/**/*.js\" \"fixtures/**/*.js\" \"tests/**/*.js\" playwright.config.ts",
-    "format:fix": "prettier --write \"pages/**/*.js\" \"fixtures/**/*.js\" \"tests/**/*.js\" playwright.config.ts",
+    "format": "prettier --check \"pages/**/*.ts\" \"fixtures/**/*.ts\" \"tests/**/*.ts\" playwright.config.ts",
+    "format:fix": "prettier --write \"pages/**/*.ts\" \"fixtures/**/*.ts\" \"tests/**/*.ts\" playwright.config.ts",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
     "test:report": "playwright show-report",
@@ -21,7 +20,9 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",
+    "@types/node": "^25.9.2",
     "concurrently": "^9.1.2",
-    "prettier": "^3.5.3"
+    "prettier": "^3.5.3",
+    "typescript": "^5.9.3"
   }
 }
