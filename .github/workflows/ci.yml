@@ -11,7 +11,8 @@
 #
 # JOBS:
 #   playwright-checks – install deps, TypeScript check, Prettier format check
-#   e2e-tests         – build Docker image, run Playwright tests in container
+#   build-image       – build and push Docker image to GitHub Container Registry
+#   e2e-tests         – pull image from GHCR and run Playwright tests in container
 # ══════════════════════════════════════════════════════════════════════════════
 
 name: CI – Pull Request Checks
@@ -36,6 +37,7 @@ concurrency:
 
 env:
   NODE_VERSION: '21.7.1'
+  IMAGE_NAME: eventhub-e2e
 
 # ─────────────────────────────────────────────────────────────────────────────
 jobs:
@@ -86,35 +88,75 @@ jobs:
           echo "✓ All files are correctly formatted"
 
   # ╔═══════════════════════════════════════════════════════════════════════════
+  # ║  JOB – BUILD & PUSH DOCKER IMAGE
+  # ║  Builds the test image and pushes it to GitHub Container Registry (GHCR).
+  # ║  Uses GitHub Actions layer cache so unchanged layers are not rebuilt.
+  # ║  No extra secrets needed — GITHUB_TOKEN is sufficient for GHCR.
+  # ╚═══════════════════════════════════════════════════════════════════════════
+  build-image:
+    name: Build & Push Docker Image
+    runs-on: ubuntu-latest
+    needs: playwright-checks
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Tags the image with the commit SHA for full traceability.
+      - name: Build and push image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # ╔═══════════════════════════════════════════════════════════════════════════
   # ║  JOB – E2E TESTS (DOCKER)
-  # ║  Builds the self-contained test image and runs Playwright against the
+  # ║  Pulls the image pushed by build-image and runs Playwright against the
   # ║  live staging site. HTML report is uploaded as a workflow artifact.
   # ╚═══════════════════════════════════════════════════════════════════════════
   e2e-tests:
     name: E2E Tests (Playwright / Docker)
     runs-on: ubuntu-latest
-    needs: playwright-checks   # Only run if static checks pass
+    needs: build-image
+    permissions:
+      contents: read
+      packages: read
 
     steps:
-      # ── Checkout ─────────────────────────────────────────────────────────────
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # ── Build Docker image ────────────────────────────────────────────────────
-      # Installs pnpm, Playwright/Chromium, and all deps inside a node:22-slim image.
-      - name: Build E2E Docker image
-        run: docker build -t eventhub-e2e .
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      # ── Run tests ─────────────────────────────────────────────────────────────
       # Mounts report dirs so artifacts survive container exit.
       - name: Run E2E tests in container
         run: |
           docker run --rm \
             -v "${{ github.workspace }}/playwright-report:/app/playwright-report" \
             -v "${{ github.workspace }}/test-results:/app/test-results" \
-            eventhub-e2e
+            ghcr.io/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
 
-      # ── Upload HTML report ────────────────────────────────────────────────────
       # Runs even on test failure so the report is always available for inspection.
       - name: Upload Playwright HTML report
         if: always()
