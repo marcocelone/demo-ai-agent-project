@@ -18,6 +18,10 @@ build/
 *.log
 npm-debug.log*
 
+# Reports
+playwright-report/
+test-results/
+
 # OS files
 .DS_Store
 Thumbs.db
