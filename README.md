@@ -1,6 +1,6 @@
 # EventHub — E2E Test Suite
 
-Playwright E2E tests for the [EventHub](https://eventhub.rahulshettyacademy.com) ticket booking platform. Tests run against the live staging site — no local app setup required.
+Playwright E2E tests for the ticket booking platform. Tests run against the live staging site — no local app setup required.
 
 ---
 
