@@ -53,7 +53,7 @@ Use for: Links, buttons, headings — anything with semantic HTML roles.
 page.getByLabel('Full Name')
 page.getByLabel('Password')
 page.getByPlaceholder('you@email.com')
-page.getByPlaceholder('+91 98765 43210')
+page.getByPlaceholder('+1 555-555-555')
 ```
 Use for: Form inputs that have associated labels or placeholder text.
 
@@ -145,8 +145,8 @@ import { test, expect } from '@playwright/test';
 const BASE_URL = 'http://localhost:3000';
 
 // Credentials as constants at top
-const USER_EMAIL = 'rahulshetty1@gmail.com';
-const USER_PASSWORD = 'Magiclife1!';
+const USER_EMAIL = 'youremail@test.com';
+const USER_PASSWORD = 'Your_password';
 
 // Reusable helpers
 async function login(page) {
