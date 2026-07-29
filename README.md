@@ -139,8 +139,8 @@ docker run --rm eventhub-e2e
 
 | User | Email | Password |
 |---|---|---|
-| Primary | rahulshetty1@gmail.com | Magiclife1! |
-| Cross-user | rahulshetty1@yahoo.com | Magiclife1! |
+| Primary | |  |
+| Cross-user | |  |
 
 ---
 
